@@ -16,8 +16,28 @@
 
 package cn.nextop.rxjava.share.practices;
 
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+
+
 /**
  * @author Baoyi Chen
  */
 public class Practice4 {
+
+    /*
+     * 举例:
+     * 参数observable = Observable["a", "b", "c"]
+     * 参数observer在消费observable时，每个元素都在独立的线程
+     *          "a"  -->  "b"  -->  "c"
+     *           |         |         |
+     *        thread1   thread2    thread3
+     *
+     * 提示: 用Schedulers.io()
+     */
+    public void runInMultiThread(Observable<String> observable, Consumer<String> observer) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
 }

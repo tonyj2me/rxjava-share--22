@@ -1,8 +1,7 @@
 package cn.nextop.rxjava.share.practices;
 
 /**
- * @author Leon Chen
- * @since 1.0.0
+ * @author Baoyi Chen
  */
 public class Practice2Test {
 

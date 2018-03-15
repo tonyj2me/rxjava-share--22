@@ -16,8 +16,19 @@
 
 package cn.nextop.rxjava.share.practices;
 
+
+import io.reactivex.Observable;
+
 /**
  * @author Baoyi Chen
  */
 public class Practice2 {
+
+    public Observable<Double> replaceErrToNaN(Observable<Double> doubles) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    public Observable<Double> skipErr(Observable<Double> doubles) {
+        throw new UnsupportedOperationException("implementation");
+    }
 }

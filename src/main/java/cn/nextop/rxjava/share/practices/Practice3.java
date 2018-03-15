@@ -16,8 +16,45 @@
 
 package cn.nextop.rxjava.share.practices;
 
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+
 /**
  * @author Baoyi Chen
  */
 public class Practice3 {
+
+    /*
+     * 根据iterate的结果求和
+     */
+    public Maybe<Integer> sum(Observable<Node> observable) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    /*
+     * 举例:
+     *                 5
+     *                / \
+     *               6   7
+     *              / \   \
+     *             4   3  nil
+     *
+     * return Observable[4, 3, 6, 7, 5] 顺序无关
+     */
+    public Observable<Integer> iterate(Observable<Node> observable) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    public static class Node {
+        public Node left;
+        public Node right;
+        public int value;
+
+        public Node(Node left, Node right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+    }
+
 }
