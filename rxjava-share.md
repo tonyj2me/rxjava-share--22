@@ -306,7 +306,7 @@ blockingGet/blockingWait 阻塞Observable的操作符
     if (d2 != null) d2.dispose();
 ```
 
-* observeOn与subscribeOn
+* observeOn与subscribeOn, 线程调度
 
 ```java  
 
@@ -325,9 +325,9 @@ blockingGet/blockingWait 阻塞Observable的操作符
     
     ob.subscribeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处于2处都在同一个IO线程执行
     
-    ob.observeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处在主线程执行于2处都在IO线程执行
+    ob.observeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处在主线程执行于2处在IO线程执行
     
-    ob.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(consumer);//此种写法表示 1处在IO线程执行,2处在IO线程执行, 但分别属于两个线程
+    ob.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(consumer);//此种写法表示 1处在IO线程执行,2处在IO线程执行, 但分别属于两个IO线程
 ```
 
 * 异步订阅
