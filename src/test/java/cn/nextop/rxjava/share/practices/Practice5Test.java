@@ -5,8 +5,7 @@ import io.reactivex.Observable;
 import org.junit.Test;
 
 /**
- * @author Leon Chen
- * @since 1.0.0
+ * @author Baoyi Chen
  */
 public class Practice5Test {
 
