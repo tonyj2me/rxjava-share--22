@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -27,7 +28,7 @@ public class Practice4Test {
             map.put(e, true);
             latch.countDown();
         });
-        latch.await();
+        latch.await(5, TimeUnit.SECONDS);
         assertTrue(map.size() >= 2);
     }
 }
