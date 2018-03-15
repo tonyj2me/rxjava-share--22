@@ -88,7 +88,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     Flowable.just(1,2,3);
 ```
 
-* 操作符
+## 操作符
   
 在rxjava中， Observable, Flowable, Subject, Single, Maybe 类的静态方法都叫做操作符, 根据作用的不同，操作符也分几类
 
@@ -112,6 +112,7 @@ timer — 创建在一个指定的延迟之后发射单个数据的Observable
   
 buffer — 缓存，可以简单的理解为缓存，它定期从Observable收集数据到一个集合，然后把这些数据集合打包发射，而不是一次发射一个  
 flatMap — 扁平映射，将Observable发射的数据变换为Observables集合，然后将这些Observable发射的数据平坦化的放进一个单独的Observable，可以认为是一个将嵌套的数据结构展开的过程。  
+concatMap — 扁平映射，将Observable发射的数据变换为Observables集合，然后将这些Observable发射的数据平坦化的放进一个单独的Observable，可以认为是一个将嵌套的数据结构展开的过程。  
 groupBy — 分组，将原来的Observable分拆为Observable集合，将原始Observable发射的数据按Key分组，每一个Observable发射一组不同的数据  
 map — 映射，通过对序列的每一项都应用一个函数变换Observable发射的数据，实质是对序列中的每一项执行一个函数，函数的参数就是这个数据项  
 scan — 扫描，对Observable发射的每一项数据应用一个函数，然后按顺序依次发射这些值  
