@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
-package cn.nextop.rxjava.share.assignments;
+package cn.nextop.rxjava.share.practices;
+
+import io.reactivex.Observable;
 
 /**
  * @author Baoyi Chen
  */
-public class Assignment1 {
+public class Practice1 {
+
+    public int sum(Observable<Node> observable) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    public static class Node {
+        public Node left;
+        public Node right;
+        public int value;
+
+        public Node(Node left, Node right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+    }
 }

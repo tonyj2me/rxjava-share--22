@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package cn.nextop.rxjava.share.assignments;
+package cn.nextop.rxjava.share.practices;
 
 /**
  * @author Baoyi Chen
  */
-public class Assignment1Test {
+public class Practice2 {
 }
