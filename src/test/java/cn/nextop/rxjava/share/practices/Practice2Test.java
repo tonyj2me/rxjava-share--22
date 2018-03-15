@@ -1,6 +1,5 @@
 package cn.nextop.rxjava.share.practices;
 
-import cn.nextop.rxjava.share.practices.answers.Practice2;
 import cn.nextop.rxjava.share.util.Tuples;
 import cn.nextop.rxjava.share.util.type.Tuple2;
 import io.reactivex.Observable;
