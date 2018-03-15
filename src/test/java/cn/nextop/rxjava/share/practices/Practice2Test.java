@@ -24,9 +24,11 @@ public class Practice2Test {
         values.add(Tuples.of("a", 2));
         values.add(Tuples.of("b", 1));
         values.add(Tuples.of("c", 2));
-        new Practice2().wordCount1(Observable.just("a", "a", "b", "c", "c")).forEach(e -> {
-            assertTrue(values.contains(e));
-        });
+        List<Tuple2<String, Integer>> list = new Practice2().wordCount1(Observable.just("a", "a", "b", "c", "c")).toList().blockingGet();
+        assertEquals(3, list.size());
+        for (Tuple2<String, Integer> tuple2 : list) {
+            assertTrue(values.contains(tuple2));
+        }
     }
 
     @Test
