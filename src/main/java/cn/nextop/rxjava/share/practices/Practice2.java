@@ -17,18 +17,33 @@
 package cn.nextop.rxjava.share.practices;
 
 
+import cn.nextop.rxjava.share.util.type.Tuple2;
 import io.reactivex.Observable;
+import io.reactivex.Single;
+
+import java.util.Map;
 
 /**
  * @author Baoyi Chen
  */
 public class Practice2 {
 
-    public Observable<Double> replaceErrToNaN(Observable<Double> doubles) {
+    /*
+     * 举例:
+     * words = Observable["a", "a", "b", "c", "c"]
+     * 返回: Observable[("a", 2), ("b", 1), ("c", 2)]
+     */
+    public Observable<Tuple2<String, Integer>> worldCount1(Observable<String> words) {
         throw new UnsupportedOperationException("implementation");
     }
 
-    public Observable<Double> skipErr(Observable<Double> doubles) {
+    /*
+     * 举例:
+     * words = Observable["a", "a", "b", "c", "c"]
+     * 返回: Single[Map{a=2, b=1, c=2}]
+     */
+    public Single<Map<String, Integer>> worldCount2(Observable<String> words) {
         throw new UnsupportedOperationException("implementation");
     }
+
 }
