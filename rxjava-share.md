@@ -88,7 +88,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     Flowable.just(1,2,3);
 ```
 
-## 操作符
+## 操作符简介
   
 在rxjava中， Observable, Flowable, Subject, Single, Maybe 类的静态方法都叫做操作符, 根据作用的不同，操作符也分几类
 
@@ -108,7 +108,7 @@ repeat — 创建重复发射特定的数据或数据序列的Observable
 timer — 创建在一个指定的延迟之后发射单个数据的Observable  
   
 #### 变换操作  
-这些操作符可用于对Observable发射的数据进行变换，详细解释可以看每个操作符的文档  
+这些操作符可用于对Observable发射的数据进行变换  
   
 buffer — 缓存，可以简单的理解为缓存，它定期从Observable收集数据到一个集合，然后把这些数据集合打包发射，而不是一次发射一个  
 flatMap — 扁平映射，将Observable发射的数据变换为Observables集合，然后将这些Observable发射的数据平坦化的放进一个单独的Observable，可以认为是一个将嵌套的数据结构展开的过程。  
@@ -210,7 +210,7 @@ blockingGet/blockingWait 阻塞Observable的操作符
 转发Observable的部分值（条件/布尔/过滤操作）  
 对Observable发射的数据序列求值（算术/聚合操作）  
 
-# 由观察者模式演变到rxjava
+## 由观察者模式演变到rxjava
 
 ```java  
     // 观察者模式
@@ -306,6 +306,30 @@ blockingGet/blockingWait 阻塞Observable的操作符
     if (d2 != null) d2.dispose();
 ```
 
+* observeOn与subscribeOn
+
+```java  
+
+    Observable<Integer> ob = Observable.create(emitter -> {
+        for (int i = 0; i < 100; i++) {    // 1
+            emitter.onNext(i);             // 1
+        }                                  // 1
+        emitter.onComplete();              // 1
+    });
+    
+    
+    Consumer<Integer> consumer = x -> {
+        System.out.println(x);             // 2
+    };
+    
+    
+    ob.subscribeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处于2处都在同一个IO线程执行
+    
+    ob.observeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处在主线程执行于2处都在IO线程执行
+    
+    ob.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(consumer);//此种写法表示 1处在IO线程执行,2处在IO线程执行, 但分别属于两个线程
+```
+
 * 异步订阅
 
 ```java  
@@ -388,7 +412,46 @@ blockingGet/blockingWait 阻塞Observable的操作符
 
 ```
 
-* 副作用1  
+* 将普通方法转变为Observable
+
+```java  
+
+    public List<String> getSomeList() {
+        // 数据库耗时操作
+        return Lists.of("chenby", "qutl", "wanlq");
+    }
+    
+    // 阻塞调用
+    List<String> list = getSomeList();
+    // 其他操作
+    ...
+    ...
+    
+    //转变为Observable
+    public Observable<List<String>> getSomeList() {
+        return Observable.create(emitter -> {
+            // 数据库耗时操作
+            try {
+                emitter.onNext(Lists.of("chenby", "qutl", "wanlq"));
+            } catch (Throwable e) {
+                emitter.onError(e);
+            }
+            emitter.onComplete();
+        });
+    }
+    
+    // 非阻塞调用
+    Observable<List<String>> ob = getSomeList();
+    // 其他操作
+    ...
+    ...
+    ob.subscribe(x -> System.out.println(x)); // 如果没应用调度器的话在此处阻塞（真正订阅的时候阻塞）
+    // 把下面的注释打开的话不会阻塞之后的操作
+    // ob.subscribeOn(Schedulers.io()).subscribe(e -> System.out.println(e)); 
+
+```
+
+## 副作用1  
 
 ```java  
 
@@ -442,7 +505,7 @@ blockingGet/blockingWait 阻塞Observable的操作符
     
 ```
 
-* 副作用2
+## 副作用2
 
 ```java  
 
