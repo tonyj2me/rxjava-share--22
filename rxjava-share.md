@@ -523,7 +523,44 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 |window(timespan, count)	|computation|
 |window(timespan, timeshift)	|computation|
   
+判断在哪个线程上调度可以通过源码上的注解  
   
+```java  
+    /**
+     * Returns an Observable that emits windows of items it collects from the source ObservableSource. The resulting
+     * ObservableSource emits connected, non-overlapping windows, each of a fixed duration as specified by the
+     * {@code timespan} argument or a maximum size as specified by the {@code count} argument (whichever is
+     * reached first). When the source ObservableSource completes or encounters an error, the resulting ObservableSource
+     * emits the current window and propagates the notification from the source ObservableSource.
+     * <p>
+     * <img width="640" height="370" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/window6.png" alt="">
+     * <dl>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>This version of {@code window} operates by default on the {@code computation} {@link Scheduler}.</dd>
+     * </dl>
+     *
+     * @param timespan
+     *            the period of time each window collects items before it should be emitted and replaced with a
+     *            new window
+     * @param unit
+     *            the unit of time that applies to the {@code timespan} argument
+     * @param count
+     *            the maximum size of each window before it should be emitted
+     * @param restart
+     *            if true, when a window reaches the capacity limit, the timer is restarted as well
+     * @return an Observable that emits connected, non-overlapping windows of items from the source ObservableSource
+     *         that were emitted during a fixed duration of time or when the window has reached maximum capacity
+     *         (whichever occurs first)
+     * @see <a href="http://reactivex.io/documentation/operators/window.html">ReactiveX operators documentation: Window</a>
+     */
+    @CheckReturnValue
+    @SchedulerSupport(SchedulerSupport.COMPUTATION)
+    public final Observable<Observable<T>> window(long timespan, TimeUnit unit,
+            long count, boolean restart) {
+        return window(timespan, unit, Schedulers.computation(), count, restart);
+    }
+
+```
 ## 副作用1  
 
 ```java  

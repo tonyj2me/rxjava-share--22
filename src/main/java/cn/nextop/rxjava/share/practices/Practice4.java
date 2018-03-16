@@ -34,7 +34,6 @@ public class Practice4 {
      *           |         |         |
      *        thread1   thread2    thread3
      *
-     * 提示: 用Schedulers.io()
      */
     public void runInMultiThread(Observable<String> observable, Consumer<String> observer) {
         throw new UnsupportedOperationException("implementation");
