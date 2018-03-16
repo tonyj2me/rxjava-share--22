@@ -576,10 +576,41 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 例如，服务端设置了缓冲区，服务端在往客户端发送数据之前，先写入缓冲区，那么如果客户端消费数据较慢的话，服务端的缓冲区一旦满了的话，服务端可以做相应的断开等操作。  
 客户端也可以设置相应的缓冲区，客户端消费较慢导致缓冲满的话，也可以主动做断开等操作。
 
-### rxjava2中处理背压
+### rxjava2中背压的例子
 
+```java  
+    Flowable.<Integer>create(emitter -> {
+        for (int i = 0; true; i++) {
+            Thread.sleep(5);              // 生产速度延迟5ms
+            emitter.onNext(i);
+        }
+    }, BackpressureStrategy.MISSING)      // 不指定背压策略，由onBackpressureXXX指定
+      .onBackpressureBuffer(20)           // 指定背压的buffer为20，当buffer满会产生一个MissingBackpressureException异常在Throwable::printStackTrace打印
+      .observeOn(Schedulers.newThread())  // 在另一个线程消费
+      .subscribe(e -> {
+        Thread.sleep(10);                 // 消费速度延迟10ms 
+        System.out.println(e);
+    }, Throwable::printStackTrace);
+```
 
+BackpressureStrategy:  
+  
+| 策略| 效果 |
+|----|------|
+|MISSING| 不指定策略，由后续的onBackpressureXXX指定策略|
+|ERROR| 默认的buffer大小为128， 流速不均衡时发射MissingBackpressureException异常|
+|BUFFER| 相当于无界buffer， 使用不当会OOM|
+|DROP|默认的buffer大小为128,缓存最近的onNext事件|
+|LATEST|默认的buffer大小为128,缓存区会保留最后的OnNext事件，覆盖之前缓存的OnNext事件。|
+  
+当策略为MISSING时，可以通过后续的onBackpressureXXX指定背压策略, 如上代码所示，可以自定义buffer的大小, 以及其他的背压操作符  
 
+| 操作符| 效果 |
+|----|------|
+|onBackpressureBuffer| 指定背压buffer大小|
+|onBackpressureDrop| 等同于DROP策略|
+|onBackpressureLatest|等同于LATEST策略|
+  
 ## 副作用1  
 
 ```java  
