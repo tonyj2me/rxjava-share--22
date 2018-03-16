@@ -455,16 +455,59 @@ blockingGet/blockingWait 阻塞Observable的操作符
 
 前文已经介绍了observeOn和subscribeOn两个操作符，这两个操作符可以接受一个调度器参数  
 下表展示了RxJava中可用的调度器种类：  
-
+  
 |调度器类型  |	效果         |  
 |-----------|----------------|  
 | Schedulers.computation()	| 用于计算任务，如事件循环或和回调处理，不要用于IO操作(IO操作请使用Schedulers.io())；默认线程数等于处理器的数量 | 
 | Schedulers.from(executor)	| 使用指定的Executor作为调度器 | 
 | Schedulers.immediate()	| 在当前线程立即开始执行任务 | 
-| Schedulers.io()	| 用于IO密集型任务，如异步阻塞IO操作，这个调度器的线程池会根据需要增长；对于普通的计算任务，请使用Schedulers.computation()；Schedulers.io()默认是一个CachedThreadScheduler，很像一个有线程缓存的新线程调度器 | 
+| Schedulers.io()	| 用于IO密集型任务，如异步阻塞IO操作，这个调度器的线程池会根据需要增长；对于普通的计算任务，请使用Schedulers.computation()；Schedulers.io()默认是一个CachedThreadScheduler | 
 | Schedulers.newThread()	| 为每个任务创建一个新线程 | 
 | Schedulers.trampoline()	| 当其它排队的任务完成后，在当前线程排队开始执行 | 
-
+  
+在rxjava中，如果不指定observeOn和subscribeOn，默认操作符不在任何特定的调度器上执行，但是也有一些例外  
+如下操作符在特定的调度器上执行  
+  
+|操作符	|调度器 |
+|-------|-------|
+|buffer(timespan)	| computation |
+|buffer(timespan, count)	| computation| 
+|buffer(timespan, timeshift)	|computation|
+|debounce(timeout, unit)	|computation|
+|delay(delay, unit)	|computation|
+|delaySubscription(delay, unit)	|computation|
+|interval	|computation|
+|repeat	|trampoline|
+|replay(time, unit)	|computation|
+|replay(buffersize, time, unit)	|computation|
+|replay(selector, time, unit)	|computation|
+|replay(selector, buffersize, time, unit)	|computation|
+|retry	|trampoline|
+|sample(period, unit)	|computation|
+|skip(time, unit)	|computation|
+|skipLast(time, unit)	|computation|
+|take(time, unit)	|computation|
+|takeLast(time, unit)	|computation|
+|takeLast(count, time, unit)	|computation|
+|takeLastBuffer(time, unit)	|computation|
+|takeLastBuffer(count, time, unit)	|computation|
+|throttleFirst	|computation|
+|throttleLast	|computation|
+|throttleWithTimeout	|computation|
+|timeInterval	|immediate|
+|timeout(timeoutSelector)	|immediate|
+|timeout(firstTimeoutSelector, timeoutSelector)	|immediate|
+|timeout(timeoutSelector, other)	|immediate|
+|timeout(timeout, timeUnit)	|computation|
+|timeout(firstTimeoutSelector, timeoutSelector, other)	|immediate|
+|timeout(timeout, timeUnit, other)	|computation|
+|timer	|computation|
+|timestamp	|immediate|
+|window(timespan)|	computation|
+|window(timespan, count)	|computation|
+|window(timespan, timeshift)	|computation|
+  
+  
 ## 副作用1  
 
 ```java  
