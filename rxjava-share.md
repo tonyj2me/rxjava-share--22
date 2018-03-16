@@ -481,7 +481,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 |-----------|----------------|  
 | Schedulers.computation()	| 用于计算任务，如事件循环或和回调处理，不要用于IO操作(IO操作请使用Schedulers.io())；默认线程数等于处理器的数量 | 
 | Schedulers.from(executor)	| 使用指定的Executor作为调度器 | 
-| Schedulers.immediate()	| 在当前线程立即开始执行任务 | 
+| Schedulers.single()	| submit到一个单独的线程执行，保证有序 | 
 | Schedulers.io()	| 用于IO密集型任务，如异步阻塞IO操作，这个调度器的线程池会根据需要增长；对于普通的计算任务，请使用Schedulers.computation()；Schedulers.io()默认是一个CachedThreadScheduler | 
 | Schedulers.newThread()	| 为每个任务创建一个新线程 | 
 | Schedulers.trampoline()	| 当其它排队的任务完成后，在当前线程排队开始执行 | 
@@ -498,32 +498,27 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 |delay(delay, unit)	|computation|
 |delaySubscription(delay, unit)	|computation|
 |interval	|computation|
-|repeat	|trampoline|
 |replay(time, unit)	|computation|
 |replay(buffersize, time, unit)	|computation|
 |replay(selector, time, unit)	|computation|
 |replay(selector, buffersize, time, unit)	|computation|
-|retry	|trampoline|
 |sample(period, unit)	|computation|
 |skip(time, unit)	|computation|
-|skipLast(time, unit)	|computation|
+|skipLast(time, unit)	|trampoline|
+|skipLast(count, time, unit)	|trampoline|
 |take(time, unit)	|computation|
-|takeLast(time, unit)	|computation|
-|takeLast(count, time, unit)	|computation|
+|takeLast(time, unit)	|trampoline|
+|takeLast(count, time, unit)	|trampoline|
 |takeLastBuffer(time, unit)	|computation|
 |takeLastBuffer(count, time, unit)	|computation|
 |throttleFirst	|computation|
 |throttleLast	|computation|
 |throttleWithTimeout	|computation|
-|timeInterval	|immediate|
-|timeout(timeoutSelector)	|immediate|
-|timeout(firstTimeoutSelector, timeoutSelector)	|immediate|
-|timeout(timeoutSelector, other)	|immediate|
+|timeInterval	|computation|
 |timeout(timeout, timeUnit)	|computation|
-|timeout(firstTimeoutSelector, timeoutSelector, other)	|immediate|
 |timeout(timeout, timeUnit, other)	|computation|
 |timer	|computation|
-|timestamp	|immediate|
+|timestamp	|computation|
 |window(timespan)|	computation|
 |window(timespan, count)	|computation|
 |window(timespan, timeshift)	|computation|
