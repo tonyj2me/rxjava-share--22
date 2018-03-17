@@ -83,7 +83,7 @@ public class Practice5 {
 
     /*
      * example:
-     * param: Observable["a", Observable["b"]
+     * param: Observable["a"], Observable["b"]
      * return: Observable["a", "b"]
      */
     public Observable<String> concat(List<Observable<String>> source) {
