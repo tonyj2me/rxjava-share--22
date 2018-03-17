@@ -16,11 +16,9 @@
 
 package cn.nextop.rxjava.share.practices;
 
-
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -80,6 +78,15 @@ public class Practice5 {
      * return: Observable["a", "b", "a", "b"]
      */
     public Observable<String> repeat(Observable<String> source, int count) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    /*
+     * example:
+     * param: Observable["a", Observable["b"]
+     * return: Observable["a", "b"]
+     */
+    public Observable<String> concat(List<Observable<String>> source) {
         throw new UnsupportedOperationException("implementation");
     }
 

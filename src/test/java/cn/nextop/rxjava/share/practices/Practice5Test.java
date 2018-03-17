@@ -2,7 +2,12 @@ package cn.nextop.rxjava.share.practices;
 
 import cn.nextop.rxjava.share.util.Lists;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
 
 /**
  * @author Baoyi Chen
@@ -37,5 +42,13 @@ public class Practice5Test {
     @Test
     public void repeat() {
         new Practice5().repeat(Observable.just("0", "1"), 5).test().assertResult("0", "1", "0", "1", "0", "1", "0", "1", "0", "1");
+    }
+
+    @Test
+    public void concat() {
+        List<String> list = new Practice5().concat(Lists.of(Observable.just("a").delay(1, TimeUnit.SECONDS), Observable.just("c").delay(1, TimeUnit.MILLISECONDS))).subscribeOn(Schedulers.newThread()).toList().blockingGet();
+        assertEquals(2, list.size());
+        assertEquals("a", list.get(0));
+        assertEquals("c", list.get(1));
     }
 }
