@@ -51,4 +51,12 @@ public class Practice5Test {
         assertEquals("a", list.get(0));
         assertEquals("c", list.get(1));
     }
+
+    @Test
+    public void merge() {
+        List<String> list = new Practice5().concat(Lists.of(Observable.just("a").delay(1, TimeUnit.SECONDS), Observable.just("c").delay(1, TimeUnit.MILLISECONDS))).subscribeOn(Schedulers.newThread()).toList().blockingGet();
+        assertEquals(2, list.size());
+        assertEquals("c", list.get(0));
+        assertEquals("a", list.get(1));
+    }
 }

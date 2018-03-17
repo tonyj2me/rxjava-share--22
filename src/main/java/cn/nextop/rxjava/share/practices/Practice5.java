@@ -90,4 +90,13 @@ public class Practice5 {
         throw new UnsupportedOperationException("implementation");
     }
 
+    /*
+     * example:
+     * param: Observable["a"], Observable["b"]
+     * return: Observable["a", "b"]
+     */
+    public Observable<String> merge(List<Observable<String>> source) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
 }
