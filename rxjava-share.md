@@ -613,7 +613,78 @@ BackpressureStrategy:
 
 ## "Cold" Observable 与 "Hot" Observable
 
+### "Cold" Observable
 
+```java  
+    Observable<Integer> ob = Observable.create(emitter -> {
+        System.out.println("subscribed");
+        emitter.onNext(new Random().nextInt());
+        emitter.onComplete();
+    });
+    
+    ob.subscribe(e -> System.out.println(e));
+    ob.subscribe(e -> System.out.println(e));
+    
+    // 结果:
+    // subscribed
+    // -1361531170
+    // subscribed
+    // 316772999
+```
+
+### "Hot" Observable
+
+```java  
+    ConnectableObservable<Integer> ob = Observable.<Integer>create(emitter -> {
+        System.out.println("subscribed");
+        emitter.onNext(new Random().nextInt());
+        emitter.onComplete();
+    }).publish();
+
+    ob.subscribe(e -> System.out.println(e));
+    ob.subscribe(e -> System.out.println(e));
+    ob.connect();
+    
+    // 结果:
+    // subscribed
+    // 1129763832
+    // 1129763832
+
+```
+
+### "Hot" Observable 的等价方式
+
+* 用Subject实现"Hot" Observable
+
+```java  
+
+    Observable<Integer> ob = Observable.create(emitter -> {
+        System.out.println("subscribed");
+        emitter.onNext(new Random().nextInt());
+        emitter.onComplete();
+    });
+
+    Subject<Integer> subject = PublishSubject.create();
+
+    subject.subscribe(e -> System.out.println(e));
+    subject.subscribe(e -> System.out.println(e));
+
+    ob.subscribe(subject);
+```
+
+* 等同于如下图
+
+```java  
+                                                    -----------
+                                       ------------>| Observer|
+                         proxy         |            -----------
+                      ------------     |
+   Observable ------> |  Subject | --->|
+                      ------------     |
+                                       |            -----------
+                                       ------------>| Observer|
+                                                    -----------                                    
+```
   
 ## 副作用1  
 
