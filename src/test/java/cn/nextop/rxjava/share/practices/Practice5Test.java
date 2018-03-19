@@ -1,11 +1,13 @@
 package cn.nextop.rxjava.share.practices;
 
+import cn.nextop.rxjava.share.practices.answers.Practice5;
 import cn.nextop.rxjava.share.util.Lists;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import org.junit.Test;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -54,7 +56,7 @@ public class Practice5Test {
 
     @Test
     public void merge() {
-        List<String> list = new Practice5().concat(Lists.of(Observable.just("a").delay(1, TimeUnit.SECONDS), Observable.just("c").delay(1, TimeUnit.MILLISECONDS))).subscribeOn(Schedulers.newThread()).toList().blockingGet();
+        List<String> list = new Practice5().merge(Lists.of(Observable.just("a").delay(1, TimeUnit.SECONDS), Observable.just("c").delay(1, TimeUnit.MILLISECONDS))).subscribeOn(Schedulers.newThread()).toList().blockingGet();
         assertEquals(2, list.size());
         assertEquals("c", list.get(0));
         assertEquals("a", list.get(1));
