@@ -1005,3 +1005,70 @@ BackpressureStrategy:
     
     // Observable[1,2,3,4,5] 聚合操作， 相当于实现了count操作符
 ```
+
+## 自定义操作符
+
+* lift
+
+```java  
+    // lift操作符对Observer对象apply一个变换函数
+    
+    // 用lift实现map操作符
+    
+    Observable.just(1,2,3).lift(new ObservableOperator<String, Integer>() {
+
+        @Override
+        public Observer<? super Integer> apply(Observer<? super String> observer) throws Exception {
+            return new Observer<Integer>() {
+
+                @Override
+                public void onSubscribe(Disposable d) {
+                    observer.onSubscribe(d);
+                }
+
+                @Override
+                public void onNext(Integer integer) {
+                    observer.onNext(String.valueOf(integer) + "str");
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    observer.onError(e);
+                }
+
+                @Override
+                public void onComplete() {
+                    observer.onComplete();
+                }
+            };
+        }
+    }).subscribe(e -> System.out.println(e));
+
+```
+
+* compose
+
+```java  
+    // compose操作符对Observable对象apply一个变换函数
+    
+    Observable.just(1,2,3).compose(new ObservableTransformer<Integer, String>() {
+
+        @Override
+        public ObservableSource<String> apply(Observable<Integer> upstream) {
+            return Observable.create(emitter -> {
+                upstream.subscribe(e -> {
+                    emitter.onNext(String.valueOf(e) + "str");
+                }, e -> emitter.onError(e), () -> emitter.onComplete());
+            });
+        }
+    }).subscribe(e -> System.out.println(e));
+
+```
+
+# 相关引用
+
+* [rx doc](http://reactivex.io/documentation)
+* [rx doc-cn](https://mcxiaoke.gitbooks.io/rxdocs/content/)
+* [introduction rx](http://www.introtorx.com/Content/v1.0.10621.0/01_WhyRx.html)
+* [cold and hot observable](https://github.com/ReactiveX/rxjs/issues/2604)
+* [backpressure](https://github.com/ReactiveX/RxJava/wiki/Backpressure-(2.0))
