@@ -1,6 +1,5 @@
 package cn.nextop.rxjava.share.practices;
 
-import cn.nextop.rxjava.share.practices.answers.Practice5;
 import cn.nextop.rxjava.share.util.Lists;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
