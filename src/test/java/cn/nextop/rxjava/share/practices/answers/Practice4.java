@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package cn.nextop.rxjava.share.examples;
+package cn.nextop.rxjava.share.practices.answers;
+
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * @author Baoyi Chen
  */
-public class Example2 {
+public class Practice4 {
+
+    public void runInMultiThread(Observable<String> observable, Consumer<String> observer) {
+        observable.map(x -> Observable.just(x)).map(e -> e.subscribeOn(Schedulers.newThread())).subscribe(e -> {
+            e.subscribe(observer);
+        });
+    }
 }
