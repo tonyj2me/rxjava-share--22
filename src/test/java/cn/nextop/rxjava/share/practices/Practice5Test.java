@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * @author Baoyi Chen
@@ -59,5 +60,16 @@ public class Practice5Test {
         assertEquals(2, list.size());
         assertEquals("c", list.get(0));
         assertEquals("a", list.get(1));
+    }
+
+    @Test
+    public void delayAll() {
+        long st = System.currentTimeMillis();
+        List<String> list = new Practice5().delayAll(Observable.just("a", "b", "c"), 1, TimeUnit.SECONDS).toList().blockingGet();
+        assertEquals(3, list.size());
+        assertEquals("a", list.get(0));
+        assertEquals("b", list.get(1));
+        assertEquals("c", list.get(2));
+        assertTrue(System.currentTimeMillis() - st >= 3000);
     }
 }

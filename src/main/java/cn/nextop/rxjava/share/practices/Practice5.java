@@ -19,7 +19,9 @@ package cn.nextop.rxjava.share.practices;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 /**
@@ -96,6 +98,15 @@ public class Practice5 {
      * return: Observable["a", "b"]
      */
     public Observable<String> merge(List<Observable<String>> source) {
+        throw new UnsupportedOperationException("implementation");
+    }
+
+    /*
+     * example:
+     * param: Observable["a", "b", "c"], 1, SECONDS
+     * return: Observable["a", "b", "c"], 每个元素都延迟1秒
+     */
+    public Observable<String> delayAll(Observable<String> source, long delay, TimeUnit unit) {
         throw new UnsupportedOperationException("implementation");
     }
 
