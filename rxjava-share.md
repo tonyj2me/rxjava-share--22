@@ -501,6 +501,12 @@ BackpressureStrategy:
     // subscribed
     // 1129763832
     // 1129763832
+    
+    // 用refCount操作符将Hot Observable再转变为Cold Observable
+    
+    Observable<Integer> ob1 = ob.refCount();
+    ob1.subscribe(e -> System.out.println(e));
+    ob1.subscribe(e -> System.out.println(e));
 
 ```
 
@@ -760,6 +766,7 @@ BackpressureStrategy:
 |   操作符    |       效果       |
 |------------|------------------|
 |all | 判断Observable发射的所有的数据项是否都满足某个条件  |
+|any | 判断Observable发射的某一个数据项是否都满足某个条件  |
 |ambWith | 给定多个Observable，只让第一个发射数据的Observable发射全部数据  |
 |contains | 判断Observable是否会发射一个指定的数据项  |
 |defaultIfEmpty | 发射来自原始Observable的数据，如果原始Observable没有发射数据，就发射一个默认数据  |
@@ -845,4 +852,156 @@ BackpressureStrategy:
     
     // result
     // 0
+```
+
+## 变换操作符
+
+* buffer
+
+```java  
+
+    Observable.just(1,2,3,4,5).buffer(2).subscribe(e -> System.out.println(e));
+    
+    // Observable[1,2,3,4,5]转换为Observable[List[1,2], List[3,4], List[5]]
+    
+    Observable.just(1,2,3,4).buffer(1, TimeUnit.SECONDS).subscribe(e-> System.out.println(e)); //buffer可以按时间打包数据
+
+```
+
+* flatMap与concatMap
+
+```java  
+    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).flatMap(e -> e);
+    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).concatMap(e -> e);
+    
+    //Observable[Observable[1],Observable[2]]转换为Observable[1,2]，相当于解除嵌套
+    //flatMap与concatMap有顺序区别，如下所示
+    Observable<String> a = Observable.just("a").delay(1, TimeUnit.SECONDS);
+    Observable<String> b = Observable.just("c").delay(1, TimeUnit.MILLISECONDS);
+    
+    Observable.just(a,b).flatMap(e -> e).subscribe(e -> System.out.println(e));
+    // 结果
+    // [c a]
+    
+    Observable.just(a,b).concatMap(e -> e).subscribe(e -> System.out.println(e));
+    // 结果
+    // [a c]
+    
+    merge与concat和这两个操作符的区别类似。
+```
+
+* map
+
+```java  
+    
+    Observable<String> ob = Observable.just(1,2,3).map(e -> String.valueOf(e));
+    
+    // Observable[1,2,3]转换为Observable["1", "2", "3"],相当于对每一项apply一个函数
+    
+```
+
+* scan
+
+```java  
+    
+    Observable.just(1, 2, 3).scan((x, y) -> x + y).subscribe(e -> System.out.println(e));
+    
+    // Observable[1,2,3] 
+    // 从第二项2开始，与前一项apply一个BiFunction
+    // 本例，第一项1不变 ,第二项变为1 + 2 = 3, 第三项3 + 3 = 6
+    // 结果 [1,3,6]
+    
+```
+
+* groupBy
+
+```java  
+    Observable.just(Tuples.of(1, "a"), Tuples.of(1, "b"), Tuples.of(2, "d"), Tuples.of(1, "c"), Tuples.of(2, "e")).groupBy(e -> e.getV1())
+
+    // Observable[(1,"a"),(1,"b"),(2,"d"),(1,"c"),(2,"e"]转换为Observable[[key=1, value=Observable[(1,"a"),(1,"b"),(1,"c")]],[key=2, value=Observable[(2,"d"),(2,"e")]]]
+```
+
+## 过滤操作符
+
+* filter,distinct,elementAt,skip,take,first,last等操作符如字面意思，不多加解释
+
+* [debounce](http://reactivex.io/documentation/operators/debounce.html)操作符
+
+* sample操作符
+
+```java  
+
+    Observable.interval(300, TimeUnit.MILLISECONDS).sample(1,TimeUnit.SECONDS).subscribe(e -> System.out.println(e));
+    
+    // 每300毫秒发射一个数据，如下所示
+    
+    // timeline  300      600      900      1200      1500     1800     2100   .....
+    // data      0         1        2         3         4        5        6    .....
+    // sample                           2                            5         ..... ,每1秒的最后一条记录，不是随机sample
+
+```
+
+## 组合操作
+
+* [zipWith](http://reactivex.io/documentation/operators/zip.html)操作符
+
+* merge与concat操作符参见flatMap与concatMap里的讲解
+
+## 辅助操作
+
+* delay
+
+```java  
+    Observable.just(1).delay(1, TimeUnit.SECONDS)// 将1延迟1秒发射
+```
+
+* timeInterval 
+
+```java  
+    Observable.interval(100, TimeUnit.MILLISECONDS).timeInterval().subscribe(e -> System.out.println(e));
+    // 将一个Observable转换为发射两个数据之间所耗费时间的Observable
+    
+    // Observable[0,1,2,3,4,5...]
+    // Observable[Timed[time=101, unit=MILLISECONDS, value=0], Timed[time=101, unit=MILLISECONDS, value=1]...]
+    
+```
+
+* timeout
+
+```java  
+    Observable.interval(1000, TimeUnit.MILLISECONDS).timeout(500, TimeUnit.MILLISECONDS).subscribe(e-> System.out.println(e));
+    // 添加超时机制，如果过了指定的一段时间没有发射数据，就发射一个错误通知
+    // 本例抛出一个超时异常
+```
+
+* timestamp
+ 
+```java  
+    Observable.interval(1000, TimeUnit.MILLISECONDS).timestamp().subscribe(e-> System.out.println(e));
+    // 给Observable发射的每个数据项添加一个时间戳 
+    // Observable[0,1,2,3,4,5...]
+    // Observable[Timed[time=1521443650280, unit=MILLISECONDS, value=0], Timed[time=1521443651280, unit=MILLISECONDS, value=1]...]
+
+```
+ 
+## 条件和布尔操作  
+
+* ambWith
+```java  
+
+    Observable.just("a").delay(1, TimeUnit.SECONDS)
+    .ambWith(Observable.just("b").delay(2, TimeUnit.SECONDS)).subscribe(e-> System.out.println(e));
+    
+    // Observable[a] ambwith Observable[b]
+    // 返回Observable[a]
+```
+
+## 算术和聚合操作
+
+* reduce
+
+```java  
+    Observable.just(1,2,3,4,5).reduce((x, y) -> x + 1).subscribe(e-> System.out.println(e));
+    
+    // Observable[1,2,3,4,5] 聚合操作， 相当于实现了count操作符
 ```
