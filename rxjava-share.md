@@ -640,7 +640,27 @@ BackpressureStrategy:
     R --0--0--1|
 ```
 
+## onComplete 与blockingXXx
 
+```java  
+
+    Observable.just(1, 2, 3).subscribe(System.out::println, e -> {}, () -> System.out.println("completed"));
+    
+    // blockingGet 示例
+    List<Integer> list = Observable.<Integer>create(emitter -> {
+        for(int i = 0; i < 5; i++) {
+            emitter.onNext(i);
+        }
+        emitter.onComplete();  // 1
+    }).toList().blockingGet();
+    System.out.println(list);
+    
+    // 结果
+    // [0, 1, 2, 3, 4]
+    
+    // 注释掉1处再执行
+    // 调用阻塞在blockingGet上，有些rx的操作符需要配合onComplete事件，需要注意
+```
 
 ## 操作符简介
   
@@ -785,4 +805,44 @@ BackpressureStrategy:
 转发Observable的部分值（条件/布尔/过滤操作）  
 对Observable发射的数据序列求值（算术/聚合操作）  
 
+## 创建操作符
 
+### just,defer区别
+
+```java  
+    // just
+    Observable<Long> ob = Observable.just(System.currentTimeMillis());
+    ob.subscribe(System.out::println);
+    ob.subscribe(System.out::println);
+    
+    // result
+    // 1521432048686
+    // 1521432048686
+    
+    //defer
+    Observable<Long> ob = Observable.defer(() -> Observable.just(System.currentTimeMillis()));
+    ob.subscribe(System.out::println); // 相当于在此处执行Observable.just(System.currentTimeMillis()).subscribe(System.out::println);
+    ob.subscribe(System.out::println); // 相当于在此处执行Observable.just(System.currentTimeMillis()).subscribe(System.out::println);
+    // result
+    // 1521432140203
+    // 1521432140207
+```
+
+### interval, timer区别
+
+```java  
+    // interval
+    Observable.interval(1, TimeUnit.SECONDS).subscribe(System.out::println); // 从0开始生成整数序列，也就是说类型是Observable<Integer>
+   
+    // result
+    // 0
+    // 1
+    // 2
+    // ...
+    
+    //timer
+    Observable.timer(1, TimeUnit.SECONDS).subscribe(System.out::println); // 延迟1秒返回0L，也就是说类型是Observable<Long>,并只返回0L
+    
+    // result
+    // 0
+```
