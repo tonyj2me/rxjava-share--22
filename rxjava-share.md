@@ -416,6 +416,10 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 
 ## Flowable 与背压（Backpressure）
 
+### 背压
+
+背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略
+
 ### rxjava2中背压的产生
 
 当观察者与Flowable不在同一线程时，那么这个模型可以看作一个生产者与消费者。  
@@ -462,6 +466,20 @@ BackpressureStrategy:
 |onBackpressureBuffer| 指定背压buffer大小|
 |onBackpressureDrop| 等同于DROP策略|
 |onBackpressureLatest|等同于LATEST策略|
+
+* 何时使用Flowable，何时使用Observable 
+
+Observable  
+  
+[1] 小于1000个元素: 比如很少的元素，不会引起应用的OOM.
+[2] GUI事件，比如鼠标移动或点击.
+[3] 同步的可观察对象，没有必要处理背压和流控
+
+Flowable  
+  
+[1] 处理10k+元素，当上游在一段时间发送的数据量过大的时候（这个量我们往往无法预计）
+[2] 当你从本地磁盘某个文件或者数据库读取数据时（这个数据量往往也很大）应当使用Flowable，这样下游可以根据需求自己控制一次读取多少数据
+[3] 以读取数据为主且有阻塞线程的可能时用Flowable，下游可以根据某种条件自己主动读取数据。
 
 ## "Cold" Observable 与 "Hot" Observable
 
@@ -1072,3 +1090,4 @@ BackpressureStrategy:
 * [introduction rx](http://www.introtorx.com/Content/v1.0.10621.0/01_WhyRx.html)
 * [cold and hot observable](https://github.com/ReactiveX/rxjs/issues/2604)
 * [backpressure](https://github.com/ReactiveX/RxJava/wiki/Backpressure-(2.0))
+* [RxJava操作符（十）自定义操作符](http://mushuichuan.com/2016/02/05/rxjava-operator-10/)
