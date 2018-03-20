@@ -69,11 +69,26 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     subject.onNext("c");
     
     // Subject作为Observer的例子
-    Subject<String> subject = PublishSubject.create(); // 1
+    Subject<String> subject = PublishSubject.create(); 
+    subject.subscribe(e -> System.out.println(e));     // 1
     subject.subscribe(e -> System.out.println(e));     // 2
+    subject.subscribe(e -> System.out.println(e));     // 3
     
     Observable.just("1", "2", "3").subscribe(subject); //真正干活的代码在2 处
-
+    
+                                                     -----------
+                                            ---------|Observer1|------  // 1
+                                            |        -----------
+                                 Proxy      |
+              ------------     ---------    |        -----------
+    ----------|Observable|-----|Subject|----|--------|Observer2|------  // 2
+              ------------     ---------    |        -----------
+                                            |
+                                            |        -----------
+                                            ---------|Observer3|------  // 3
+                                                     -----------
+                                            
+                                            
 ```
 
 * Flowable示例
@@ -604,7 +619,7 @@ Flowable
 ```java  
                                                     -----------
                                        ------------>| Observer|
-                         proxy         |            -----------
+                         Proxy         |            -----------
                       ------------     |
    Observable ------> |  Subject | --->|
                       ------------     |
