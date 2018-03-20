@@ -1149,6 +1149,27 @@ Flowable
 
 ```
 
+## Promise
+
+* toFuture
+
+```java  
+
+    Future<List<Integer>> future = Observable.just(1,2,3).toList().delay(1, TimeUnit.SECONDS).observeOn(Schedulers.io()).toFuture();
+    List<Integer> list = future.get();
+    System.out.println(list);
+
+```
+
+* fromFuture
+
+```java  
+
+    Future<List<Integer>> future = Observable.just(1, 2, 3).toList().delay(1, TimeUnit.SECONDS).observeOn(Schedulers.io()).toFuture();
+    Observable.fromFuture(future).subscribe(e -> System.out.println(e));
+    
+```
+
 # 引申阅读
 
 * [RxJava 的 Subject](https://www.jianshu.com/p/99bd603881bf)
