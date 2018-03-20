@@ -1149,6 +1149,11 @@ Flowable
 
 ```
 
+# 引申阅读
+
+* [RxJava 的 Subject](https://www.jianshu.com/p/99bd603881bf)
+* [Reactive pull](http://blog.chengyunfeng.com/?p=981)
+
 # 相关引用
 
 * [rx doc](http://reactivex.io/documentation)
