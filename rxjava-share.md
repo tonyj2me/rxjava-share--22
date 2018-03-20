@@ -198,9 +198,38 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     
     ob.subscribeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处于2处都在同一个IO线程执行
     
+    
+    ----------------------------------------------------main thread
+            |
+            |            ------------     ----------
+            -------------|Observable|-----|Observer|----IO thread
+                         ------------     ----------
+    
+    
     ob.observeOn(Schedulers.io()).subscribe(consumer); //此种写法表示 1处在主线程执行于2处在IO线程执行
     
+                 ------------
+    -------------|Observable|----------------------------main thread
+                 ------------         |
+                                      |      ----------
+                                      -------|Observer|--IO thread
+                                             ----------
+                                             
     ob.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(consumer);//此种写法表示 1处在IO线程执行,2处在IO线程执行, 但分别属于两个IO线程
+    
+    
+    -----------------------------------------------------main thread
+           |
+           |
+           |      ------------
+           |------|Observable|---------------------------IO thread
+                  ------------      |
+                                    |
+                                    |
+                                    |    ----------
+                                    -----|Observer|------IO thread
+                                         ----------
+
 ```
 
 * 异步订阅
@@ -245,6 +274,19 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
         }
     }
     
+    
+       ------------
+    ---| Subject  |-------->----------------------------------------------main thread
+       ------------          |      Evt1,Evt2
+        Evt1,Evt2            |     -----------        
+                             ------|Observer1|----------------------------IO thread 1
+                             |     -----------        
+                             |      Evt1,Evt2
+                             |     -----------
+                             ------|Observer2|----------------------------IO thread 2
+                                   -----------                             
+                                  
+    
     // 另一种异步订阅
     Subject<Integer> subject = PublishSubject.create();
     
@@ -282,7 +324,16 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
             }
         });
     }
-
+    
+    //等同于如下图
+    
+       ------------
+    ---| Subject  |-------->------------------------------------------------------------main thread
+       ------------     |
+        Evt1, Evt2      |  ------------          -----------        -----------
+                        ---|subSubject|----------|Observer1|--------|Observer2|---------IO thread
+                           ------------          -----------        -----------
+                            Evt1, Evt2            Evt1, Evt2         Evt1, Evt2
 ```
 
 * 将普通方法转变为Observable

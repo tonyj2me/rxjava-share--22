@@ -30,9 +30,18 @@ public class Practice4 {
      * 举例:
      * 参数observable = Observable["a", "b", "c"]
      * 参数observer在消费observable时，每个元素都在独立的线程
-     *          "a"  -->  "b"  -->  "c"
-     *           |         |         |
-     *        thread1   thread2    thread3
+     *
+     *                                    thread 1   ---------------
+     *                                   |-----------|Observer["a"]|
+     *                                   |           ---------------
+     *                                   |
+     *  -------------------------        |thread 2   ---------------
+     *  |Observable["a","b","c"]|--------|-----------|Observer["b"]|
+     *  -------------------------        |           ---------------
+     *                                   |
+     *                                   |thread 3   ---------------
+     *                                   |-----------|Observer["c"]|
+     *                                               ---------------
      *
      */
     public void runInMultiThread(Observable<String> observable, Consumer<String> observer) {
