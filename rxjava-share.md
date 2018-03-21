@@ -484,19 +484,13 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
 
 ### 背压
 
-背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略
+背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种通知上游的被观察者的策略
 
 ### rxjava2中背压的产生
 
 当观察者与Flowable不在同一线程时，那么这个模型可以看作一个生产者与消费者。  
-当生产者生产item较慢，而消费者消费item较快时，不会产生任何问题。但反过来时，数据会积压到Flowable内部的一个buffer中，如果不做处理，会产生OOM错误。
-如果指定了buffer的大小，那么到达buffer的临界大小时，有相应的回调处理临界的状态。那么这就是背压的产生与处理过程。  
-
-### 网络传输中的背压
-
-不仅仅rxjava2中可以设置背压，在网络传输的客户端与服务端，也可以通过编程的手段设置背压。  
-例如，服务端设置了缓冲区，服务端在往客户端发送数据之前，先写入缓冲区，那么如果客户端消费数据较慢的话，服务端的缓冲区一旦满了的话，服务端可以做相应的断开等操作。  
-客户端也可以设置相应的缓冲区，客户端消费较慢导致缓冲满的话，也可以主动做断开等操作。
+当生产者生产item较慢，而消费者消费item较快时，不会有任何问题。但反过来时，数据会积压到Flowable内部的一个buffer中，如果不做处理，会产生OOM错误。
+如果指定了buffer的大小，那么到达buffer的临界值时，有相应的回调处理临界的状态。那么这就是背压的产生与处理过程。  
 
 ### rxjava2中背压的例子
 
@@ -923,7 +917,7 @@ Flowable
 
 ```java  
     // interval
-    Observable.interval(1, TimeUnit.SECONDS).subscribe(System.out::println); // 从0开始生成整数序列，也就是说类型是Observable<Integer>
+    Observable.interval(1, TimeUnit.SECONDS).subscribe(System.out::println); // 从0L开始生成Long型序列，也就是说类型是Observable<Long>
    
     // result
     // 0
@@ -955,8 +949,8 @@ Flowable
 * flatMap与concatMap
 
 ```java  
-    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).flatMap(e -> e);
-    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).concatMap(e -> e);
+    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).flatMap(e -> e); // Observable<Observable<Integer>> -> Observable<Integer>
+    Observable<Integer> ob = Observable.just(Observable.just(1), Observable.just(2)).concatMap(e -> e); // Observable<Observable<Integer>> -> Observable<Integer>
     
     //Observable[Observable[1],Observable[2]]转换为Observable[1,2]，相当于解除嵌套
     //flatMap与concatMap有顺序区别，如下所示
