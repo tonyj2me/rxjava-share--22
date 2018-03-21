@@ -153,7 +153,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     // 对上述代码进行改造
     Button r = new Button();
     Observable<Integer> buttonObservable = Observable.create(s -> {
-        ButtonListener listener = s::onNext;
+        ButtonListener listener = e -> s.onNext(e);
         r.addListener(listener);
         s.setCancellable(() -> r.delListener(listener));
     });
