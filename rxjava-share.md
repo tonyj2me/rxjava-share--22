@@ -370,11 +370,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     public Observable<List<String>> getSomeList() {
         return Observable.create(emitter -> {
             // 数据库耗时操作
-            try {
-                emitter.onNext(Lists.of("chenby", "qutl", "wanlq"));
-            } catch (Throwable e) {
-                emitter.onError(e);
-            }
+            emitter.onNext(Lists.of("chenby", "qutl", "wanlq"));
             emitter.onComplete();
         });
     }
