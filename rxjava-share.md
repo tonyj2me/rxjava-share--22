@@ -42,6 +42,15 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     // 1,class java.lang.Integer
     // 2,class java.lang.Integer
     // 3,class java.lang.Integer
+    
+    // emit的概念
+    
+    Observable<Integer> ob = Observable.<Integer>create(emitter -> {
+        emitter.onNext(1);
+        emitter.onNext(2);
+        emitter.onNext(3);
+        emitter.onComplete();
+    });
 
 ```
 
