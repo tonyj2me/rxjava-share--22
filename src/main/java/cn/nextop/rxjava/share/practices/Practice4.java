@@ -31,20 +31,20 @@ public class Practice4 {
      * 参数observable = Observable["a", "b", "c"]
      * 参数observer在消费observable时，每个元素都在独立的线程
      *
-     *                                    thread 1   ---------------
-     *                                   |-----------|Observer["a"]|
-     *                                   |           ---------------
-     *                                   |
-     *  -------------------------        |thread 2   ---------------
-     *  |Observable["a","b","c"]|--------|-----------|Observer["b"]|
-     *  -------------------------        |           ---------------
-     *                                   |
-     *                                   |thread 3   ---------------
-     *                                   |-----------|Observer["c"]|
-     *                                               ---------------
+     *                                              thread 1   ---------------
+     *                                             |-----------|Consumer["a"]|
+     *                                             |           ---------------
+     *                                             |
+     *  -------------------------    ----------    |thread 2   ---------------
+     *  |Observable["a","b","c"]|----|Observer|----|-----------|Consumer["b"]|
+     *  -------------------------    ----------    |           ---------------
+     *                                             |
+     *                                             |thread 3   ---------------
+     *                                             |-----------|Consumer["c"]|
+     *                                                         ---------------
      *
      */
-    public void runInMultiThread(Observable<String> observable, Consumer<String> observer) {
+    public void runInMultiThread(Observable<String> observable, Consumer<String> consumer) {
         throw new UnsupportedOperationException("implementation");
     }
 
