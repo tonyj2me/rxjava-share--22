@@ -642,7 +642,7 @@ Flowable
     // receive C at 2
     // receive D at 3
     
-    // 当订阅者唯一的时候，这个index看起来是正确的,但是增加了订阅者，这个index的结果并不正确
+    // 当订阅者唯一的时候，这个index看起来是正确的,但是增加了订阅者，这个index的结果就不正确了
     
     Observable<Character> ob = Observable.range(1,3).map(x -> (char)(x+65));
     AtomicInteger index = new AtomicInteger(0);
@@ -684,6 +684,15 @@ Flowable
 ## 副作用2
 
 ```java  
+    public static class Tuple2<T1, T2> {
+        public T1 t1;
+        public T2 t2;
+
+        public Tuple2(T1 t1, T2 t2) {
+            this.t1 = t1;
+            this.t2 = t2;
+        }
+    }
 
     Observable<Tuple2<String, String>> ob = Observable.just(new Tuple2<>("hello", "world"));
     ob.subscribe(x -> x.t2 = "bob"); //在此订阅中更改了t2的值，产生了副作用，影响其他的订阅
@@ -691,6 +700,18 @@ Flowable
     
     // 结果
     // hello bob
+    
+    Observable<Tuple2<String, String>> ob = Observable.create(emitter -> {
+        emitter.onNext(new Tuple2<>("hello", "world"));
+        emitter.onComplete();
+    });
+
+    ob.subscribe(x -> x.t2 = "bob"); //在此订阅中更改了t2的值，不会影响其他的订阅,为什么?
+    ob.subscribe(e -> System.out.println(e.t1 + " " + e.t2));
+    
+    // 结果
+    // hello world
+    
 ```
 
 ## 错误处理
