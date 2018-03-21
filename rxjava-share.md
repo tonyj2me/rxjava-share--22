@@ -382,7 +382,7 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
     ...
     ob.subscribe(x -> System.out.println(x)); // 如果没应用调度器的话在此处阻塞（真正订阅的时候阻塞）
     // 把下面的注释打开的话不会阻塞之后的操作
-    // ob.subscribeOn(Schedulers.io()).subscribe(e -> System.out.println(e)); 
+    // ob.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(e -> System.out.println(e)); 
 
 ```
 
