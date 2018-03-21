@@ -358,6 +358,38 @@ ReactiveX.io给的定义是，Rx是一个使用可观察数据流进行异步编
                         ---|subSubject|----------|Observer1|--------|Observer2|---------IO thread
                            ------------          -----------        -----------
                             Evt1, Evt2            Evt1, Evt2         Evt1, Evt2
+                            
+                            
+    Observable.just(1,2,3).observeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(e -> System.out.println(e));                  
+                            
+    //等同于如下图
+    
+       ---------------
+    ---| Observable  |-------->------------------------------------------------------------main thread
+       ---------------     |
+            1,2,3          |  
+                           --------->------------------------------------------------------IO thread
+                                            |
+                                            |         1,2,3
+                                            |       ----------
+                                            --------|Observer|-----------------------------IO thread
+                                                    ----------
+                           
+    Observable.just(1,2,3).subscribeOn(Schedulers.io()).subscribeOn(Schedulers.io()).subscribe(e -> System.out.println(e));       
+    
+    //等同于如下图
+    
+       
+    ------------>--------------------------------------------------------------------------main thread
+                           |
+                           |  
+                           --------->------------------------------------------------------IO thread
+                                            |
+                                            |         1,2,3               1,2,3
+                                            |       ------------       ----------
+                                            --------|Observable|-------|Observer|----------IO thread
+                                                    ------------       ----------
+                              
 ```
 
 * 将普通方法转变为Observable
