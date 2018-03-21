@@ -585,12 +585,35 @@ Flowable
     // 1129763832
     // 1129763832
     
-    // 用refCount操作符将Hot Observable再转变为Cold Observable
+    // 用refCount操作符将Hot Observable再转变为Cold Observable   X
     
-    Observable<Integer> ob1 = ob.refCount();
-    ob1.subscribe(e -> System.out.println(e));
-    ob1.subscribe(e -> System.out.println(e));
+    Observable<Integer> ob1 = ob.refCount();                   X
+    ob1.subscribe(e -> System.out.println(e));                 X
+    ob1.subscribe(e -> System.out.println(e));                 X
 
+    Observable<Integer> ob = Observable.<Integer>create(emitter -> {
+        Thread.sleep(1000);
+        System.out.println("subscribed");
+        for (int i = 0; i < 10; i++) {
+            Thread.sleep(1000);
+            emitter.onNext(i);
+        }
+        emitter.onComplete();
+    }).publish().refCount().subscribeOn(Schedulers.io());
+
+    ob.subscribe(e -> System.out.println(e));
+    ob.subscribe(e -> System.out.println(e));
+
+    // 结果
+    subscribed
+    0
+    0
+    1
+    1
+    2
+    2
+    3
+    3
 ```
 
 ### "Hot" Observable 的等价方式
