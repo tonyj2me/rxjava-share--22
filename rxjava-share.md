@@ -694,9 +694,9 @@ Flowable
         }
     }
 
-    Observable<Tuple2<String, String>> ob = Observable.just(new Tuple2<>("hello", "world"));
-    ob.subscribe(x -> x.t2 = "bob"); //在此订阅中更改了t2的值，产生了副作用，影响其他的订阅
-    ob.subscribe(e -> System.out.println(e.t1 + " " + e.t2));
+    Observable<Tuple2<String, String>> ob = Observable.just(new Tuple2<>("hello", "world"));   // 1
+    ob.subscribe(x -> x.t2 = "bob"); //在此订阅中更改了t2的值，产生了副作用，影响其他的订阅          // 1
+    ob.subscribe(e -> System.out.println(e.t1 + " " + e.t2));                                  // 1
     
     // 结果
     // hello bob
@@ -711,6 +711,16 @@ Flowable
     
     // 结果
     // hello world
+    
+    // 1 处代码的等价形式
+    Tuple2<String, String> tuple = new Tuple2<>("hello", "world");
+    Observable<Tuple2<String, String>> ob = Observable.create(emitter -> {
+        emitter.onNext(tuple);
+        emitter.onComplete();
+    });
+
+    ob.subscribe(x -> x.t2 = "bob");
+    ob.subscribe(e -> System.out.println(e.t1 + " " + e.t2));
     
 ```
 
