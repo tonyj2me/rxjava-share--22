@@ -839,6 +839,43 @@ Flowable
     // 调用阻塞在blockingGet上，有些rx的操作符需要配合onComplete事件，需要注意
 ```
 
+## 响应式拉取(reactive pull)
+
+```java  
+        Flowable<Integer> ob = Flowable.create(emitter -> {
+            long c;
+            int j = 0;
+            while ((c = emitter.requested()) != 0) {
+                for (int i = 0; i < c; i++) {
+                    Thread.sleep(1000);
+                    emitter.onNext(j++);
+                }
+            }
+        }, BackpressureStrategy.ERROR);
+
+        ob.subscribe(new DefaultSubscriber<Integer>() {
+            @Override
+            public void onNext(Integer integer) {
+                System.out.println(integer);
+                // request(1);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+            protected void onStart() {
+                request(1);
+            }
+        });
+```
+
 ## 操作符简介
   
 在rxjava2中， Observable, Flowable, Subject, Single, Maybe 类的静态方法都叫做操作符, 根据作用的不同，操作符也分几类
