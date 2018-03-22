@@ -631,10 +631,12 @@ Flowable
             emitter.onNext(i);
         }
         emitter.onComplete();
-    }).publish().refCount().subscribeOn(Schedulers.io());
+    });
 
-    ob.subscribe(e -> System.out.println(e));
-    ob.subscribe(e -> System.out.println(e));
+    Observable<Integer> ob1 = ob.publish().refCount().subscribeOn(Schedulers.io());
+
+    ob1.subscribe(e -> System.out.println(e));
+    ob1.subscribe(e -> System.out.println(e));
 
     // 结果
     subscribed
@@ -881,7 +883,7 @@ Flowable
 |elementAt | 取值，取特定位置的数据项  |
 |filter | 过滤，过滤掉没有通过谓词测试的数据项，只发射通过测试的  |
 |first | 首项，只发射满足条件的第一条数据  |
-|ignoreElements | 忽略所有的数据，只保留终止通知(onError或onCompleted)  |
+|ignoreElements | 忽略所有的数据，只保留终止通知(onError或onComplete)  |
 |last | 末项，只发射最后一条数据  |
 |sample | 取样，定期发射最新的数据，等于是数据抽样，有的实现里叫throttleFirst  |
 |skip | 跳过前面的若干项数据  |
@@ -983,7 +985,7 @@ Flowable
 
 ## 创建操作符
 
-### just,defer区别
+### just,defer,create区别
 
 ```java  
     // just
@@ -995,10 +997,30 @@ Flowable
     // 1521432048686
     // 1521432048686
     
+    // 等同于
+    long ms = System.currentTimeMillis();
+    Observable<Long> ob = Observable.<Long>create(emitter -> {
+        emitter.onNext(ms);
+        emitter.onComplete();
+    });
+    
     //defer
     Observable<Long> ob = Observable.defer(() -> Observable.just(System.currentTimeMillis()));
     ob.subscribe(System.out::println); // 相当于在此处执行Observable.just(System.currentTimeMillis()).subscribe(System.out::println);
     ob.subscribe(System.out::println); // 相当于在此处执行Observable.just(System.currentTimeMillis()).subscribe(System.out::println);
+    // result
+    // 1521432140203
+    // 1521432140207
+    
+    //defer与create区别
+    Observable<Long> ob = Observable.<Long>create(emitter -> {
+        emitter.onNext(System.currentTimeMillis());
+        emitter.onComplete();
+    });
+    
+    ob.subscribe(System.out::println);
+    ob.subscribe(System.out::println);
+    
     // result
     // 1521432140203
     // 1521432140207
