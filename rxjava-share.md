@@ -1156,16 +1156,16 @@ Flowable
 * take
 
 ```java  
-    public static void main(String[] args) throws IOException {
-        Observable<Integer> ob = Observable.create(emitter -> {
-            while (true) {
-                System.out.println("onNext");
-                emitter.onNext(1);
-            }
-        });
+    Observable<Integer> ob = Observable.create(emitter -> {
+        AtomicBoolean flag = new AtomicBoolean(true);
+        emitter.setCancellable(() -> flag.set(false));
+        while (flag.get()) {
+            System.out.println("onNext");
+            emitter.onNext(1);
+        }
+    });
 
-        ob.take(3).subscribe(e -> System.out.println(e));
-    }
+    ob.take(3).subscribe(e -> System.out.println(e));
 ```
 
 * [debounce](http://reactivex.io/documentation/operators/debounce.html)操作符
