@@ -1151,7 +1151,22 @@ Flowable
 
 ## 过滤操作符
 
-* filter,distinct,elementAt,skip,take,first,last等操作符如字面意思，不多加解释
+* filter,distinct,elementAt,skip,first,last等操作符如字面意思，不多加解释
+
+* take
+
+```java  
+    public static void main(String[] args) throws IOException {
+        Observable<Integer> ob = Observable.create(emitter -> {
+            while (true) {
+                System.out.println("onNext");
+                emitter.onNext(1);
+            }
+        });
+
+        ob.take(3).subscribe(e -> System.out.println(e));
+    }
+```
 
 * [debounce](http://reactivex.io/documentation/operators/debounce.html)操作符
 
