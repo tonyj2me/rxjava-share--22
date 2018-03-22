@@ -19,12 +19,7 @@ public class Practice4Test {
     public void test() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
         Map<String, Boolean> map = new ConcurrentHashMap<>();
-        Observable<String> observable = Observable.create(emitter -> {
-            new Practice4().runInMultiThread(Observable.just("a", "b", "c"), x -> {
-                emitter.onNext(Thread.currentThread().getName());
-            });
-        });
-        observable.subscribe(e -> {
+        new Practice4().runInMultiThread(Observable.just("a", "b", "c")).map(e -> Thread.currentThread().toString()).subscribe(e -> {
             map.put(e, true);
             latch.countDown();
         });

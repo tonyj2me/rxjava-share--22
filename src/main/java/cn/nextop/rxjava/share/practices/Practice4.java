@@ -18,7 +18,6 @@ package cn.nextop.rxjava.share.practices;
 
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 
 
 /**
@@ -32,19 +31,19 @@ public class Practice4 {
      * 参数observer在消费observable时，每个元素都在独立的线程
      *
      *                                              thread 1   ---------------
-     *                                             |-----------| Consume["a"]|
+     *                                             |-----------|     ["a"]   |
      *                                             |           ---------------
      *                                             |
      *  -------------------------    ----------    |thread 2   ---------------
-     *  |Observable["a","b","c"]|----|Observer|----|-----------| Consume["b"]|
+     *  |Observable["a","b","c"]|----|Observer|----|-----------|     ["b"]   |
      *  -------------------------    ----------    |           ---------------
      *                                             |
      *                                             |thread 3   ---------------
-     *                                             |-----------| Consume["c"]|
+     *                                             |-----------|     ["c"]   |
      *                                                         ---------------
      *
      */
-    public void runInMultiThread(Observable<String> observable, Consumer<String> consumer) {
+    public Observable<String> runInMultiThread(Observable<String> observable) {
         throw new UnsupportedOperationException("implementation");
     }
 
