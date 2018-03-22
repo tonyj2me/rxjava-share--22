@@ -1271,6 +1271,20 @@ Flowable
             };
         }
     }).subscribe(e -> System.out.println(e));
+    
+    // 原理
+    
+    lift function : Observer[String] => Observer[Integer]
+    
+                                        
+         ---------------------          ------      ------------------
+    -----|Observable<Integer>|----------|LIFT|------|Observer[String]|
+         ---------------------          ------      ------------------
+         
+         
+         ---------------------          -------------------      ------------------
+    -----|Observable<Integer>|----------|Observer[Integer]|------|Observer[String]|
+         ---------------------          -------------------      ------------------
 
 ```
 
